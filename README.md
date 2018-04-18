@@ -8,3 +8,7 @@ https://github.com/ekstrand/ESP8266wifi
 https://github.com/adafruit/DHT-sensor-library
 
 https://github.com/adafruit/Adafruit_Sensor
+
+https://github.com/Genotronex/BH1750FVI_Master
+
+https://github.com/adafruit/Adafruit-BMP085-Library
