@@ -15,10 +15,16 @@
 		     die("Connection failed: " . $conn->connect_error);
 		 }
 		
-		 $datenow = $now->format('Y-m-d H:i:s');
+		 $datenow = $now->format('Y-m-d');
+         echo '$datenow';
+         $timenow = $now->format('H:i:s');
+         echo '$timenow';
 		 $Humi = $out['Humidity'];
 		 $Temper = $out['Temperature'];
-		 $sql = "INSERT INTO lyy ( Time , Humidity  , Temperature) VALUES ( '$datenow' , $Humi, $Temper )";
+         $Temper2 = $out['Temperature2'];
+         $P = $out['Pressure'];
+         $L = $out['Light'];
+		 $sql = "INSERT INTO lyy (Data, Time , Humidity  , Temperature ,Temperature2, Pressure, Light) VALUES ( '$datenow', '$timenow' , $Humi, $Temper, $Temper2, $P, $L)";
 		
 		 if ($conn->query($sql) === TRUE) {
 		     echo "New record created successfully";

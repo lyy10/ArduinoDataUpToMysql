@@ -67,10 +67,13 @@ void loop() {
  // view();
   uint16_t lux = LightSensor.GetLightIntensity();// Get Lux value
   static WifiConnection *connections;
-  String x = "GET /index.php?Humidity=",y="&Temperature=";
-  String hh ,tt;
+  String x = "GET /index.php?Humidity=",y="&Temperature=",i="&Temperature2=",j="&Pressure=",z="&Light=";
+  String hh ,tt,lightlight,presspress,tt2;
   char h[6]={'\r'};
   char t[6]={'\r'};
+  char presss[10]={'\r'};
+  char light[10]={'\r'};
+  char pt[6]={'\r'};
   // check connections if the ESP8266 is there
   if (wifi_started)
     wifi.checkConnections(&connections);
@@ -79,67 +82,74 @@ void loop() {
     Serial.println("no connect to a server");
     if(wifi.connectToServer(Host,SERVER_PORT))
       Serial.println("connected server");
-    else
-     return;
+//    else
+//     return;
   }
+  snprintf(light, sizeof(light), "%d", lux);
   
-  Serial.println(dht.readHumidity(true));
-  Serial.println(dht.readTemperature());
+//  Serial.println(bmp.readTemperature());
+//  Serial.println(bmp.readPressure());
+//  Serial.println(LightSensor.GetLightIntensity());
+//  Serial.println(dht.readHumidity(true));
+//  Serial.println(dht.readTemperature());
   while (!Serial)
     ;
+  dtostrf(bmp.readTemperature(),2,2,pt);//temperature2 string
+  snprintf(presss, sizeof(presss), "%ld", bmp.readPressure());//pressure string
   dtostrf(dht.readHumidity(true),2,2,h);
   dtostrf(dht.readTemperature(),2,2,t);
-  Serial.println(h);
   while (!Serial)
     ;
-  Serial.println(t);
-  while (!Serial)
-    ;
+  lightlight = light;//light string
+  presspress = presss;
+  tt2 = pt;
   hh = h;
   tt = t;
-  x += hh + y + tt;
+  x += hh + y + tt + i + tt2 + j + presspress + z + lightlight;
   x += " HTTP/1.1\r\nHost: 192.168.1.160\r\nConnection: keep-alive\r\n\r\n";
   //strcat(sendx , h);
   Serial.println(x);
-  Serial.println("start send to a server");
-  wifi.send(SERVER,x);
-  delay(1500);
-}
-void view()
-{
-    uint16_t lux = LightSensor.GetLightIntensity();// Get Lux value
-  Serial.print("Light: ");
-  Serial.print(lux);
-  Serial.println(" lux");
   while (!Serial)
     ;
-  Serial.print("Temperature = ");
-    Serial.print(bmp.readTemperature());
-    Serial.println(" *C");
-    
-    Serial.print("Pressure = ");
-    Serial.print(bmp.readPressure());
-    Serial.println(" Pa");
-    
-    // Calculate altitude assuming 'standard' barometric
-    // pressure of 1013.25 millibar = 101325 Pascal
-    Serial.print("Altitude = ");
-    Serial.print(bmp.readAltitude());
-    Serial.println(" meters");
-
-    Serial.print("Pressure at sealevel (calculated) = ");
-    Serial.print(bmp.readSealevelPressure());
-    Serial.println(" Pa");
-
-  // you can get a more precise measurement of altitude
-  // if you know the current sea level pressure which will
-  // vary with weather and such. If it is 1015 millibars
-  // that is equal to 101500 Pascals.
-    Serial.print("Real altitude = ");
-    Serial.print(bmp.readAltitude(101500));
-    Serial.println(" meters");
-   while (!Serial)
-    ;
-   Serial.println(dht.readHumidity(true));
-   Serial.println(dht.readTemperature());
+  Serial.println("start send to a server");
+  wifi.send(SERVER,x);
+  delay(30000);
 }
+//void view()
+//{
+//    uint16_t lux = LightSensor.GetLightIntensity();// Get Lux value
+//  Serial.print("Light: ");
+//  Serial.print(lux);
+//  Serial.println(" lux");
+//  while (!Serial)
+//    ;
+//  Serial.print("Temperature = ");
+//    Serial.print(bmp.readTemperature());
+//    Serial.println(" *C");
+//    
+//    Serial.print("Pressure = ");
+//    Serial.print(bmp.readPressure());
+//    Serial.println(" Pa");
+//    
+//    // Calculate altitude assuming 'standard' barometric
+//    // pressure of 1013.25 millibar = 101325 Pascal
+//    Serial.print("Altitude = ");
+//    Serial.print(bmp.readAltitude());
+//    Serial.println(" meters");
+//
+//    Serial.print("Pressure at sealevel (calculated) = ");
+//    Serial.print(bmp.readSealevelPressure());
+//    Serial.println(" Pa");
+//
+//  // you can get a more precise measurement of altitude
+//  // if you know the current sea level pressure which will
+//  // vary with weather and such. If it is 1015 millibars
+//  // that is equal to 101500 Pascals.
+//    Serial.print("Real altitude = ");
+//    Serial.print(bmp.readAltitude(101500));
+//    Serial.println(" meters");
+//   while (!Serial)
+//    ;
+//   Serial.println(dht.readHumidity(true));
+//   Serial.println(dht.readTemperature());
+//}
